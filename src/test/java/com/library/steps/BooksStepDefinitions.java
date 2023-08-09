@@ -1,6 +1,7 @@
 package com.library.steps;
 
 import com.library.pages.BookPage;
+import com.library.pages.BorrowedBooksPage;
 import com.library.pages.DashBoardPage;
 import com.library.utility.BrowserUtil;
 import com.library.utility.DB_Util;
@@ -20,6 +21,7 @@ import java.util.Map;
 public class BooksStepDefinitions {
     DashBoardPage dashBoardPage = new DashBoardPage();
     BookPage bookPage = new BookPage();
+    BorrowedBooksPage borrowedBooksPage = new BorrowedBooksPage();
     String someBook ="";
     List<String> uiInfo = new ArrayList<>();
     String actualMostPopular= "";
@@ -135,6 +137,24 @@ public class BooksStepDefinitions {
         actualRowMap.put("Author",newAuthor);
         actualRowMap.put("Book Category",newCategory);
         Assert.assertTrue(actualRowMap.containsValue(string));
+    }
+
+    @When("the user clicks Borrow Book")
+    public void the_user_clicks_borrow_book() {
+        bookPage.borrowSearchedBook.click();
+    }
+    @Then("verify that book is shown in {string} page")
+    public void verify_that_book_is_shown_in_page(String string) {
+borrowedBooksPage.allBorrowedBooksName.contains(someBook);
+    }
+    @Then("verify logged student has same book in database")
+    public void verify_logged_student_has_same_book_in_database() {
+        DB_Util.runQuery("select * from users u inner join book_borrow bb on u.id = bb.user_id inner join books b on bb.book_id = b.id where full_name='Test Student 5' and name='"+someBook+"' order by 3 desc");
+        Map<String,String> dbRowData = DB_Util.getRowMap(1);
+        Assert.assertEquals(someBook,dbRowData.get("name"));
+
+
+
     }
 
 
