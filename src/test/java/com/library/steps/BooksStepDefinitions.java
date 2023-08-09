@@ -22,6 +22,7 @@ public class BooksStepDefinitions {
     BookPage bookPage = new BookPage();
     String someBook ="";
     List<String> uiInfo = new ArrayList<>();
+    String actualMostPopular= "";
     @When("the user navigates to {string} page")
     public void the_user_navigates_to_page(String string) {
         dashBoardPage.navigateModule(string);
@@ -69,6 +70,18 @@ public class BooksStepDefinitions {
        List<String> rowDbData = DB_Util.getRowDataAsList(1);
        Assert.assertEquals(rowDbData,uiInfo);
     }
+
+    @When("I execute query to find most popular book genre")
+    public void i_execute_query_to_find_most_popular_book_genre() {
+        DB_Util.runQuery("select bc.name,count(*) from book_borrow bb inner join books b on bb.book_id= b.id inner join book_categories bc on b.book_category_id=bc.id group by name order by 2 desc");
+        actualMostPopular = DB_Util.getFirstRowFirstColumn();
+
+    }
+    @Then("verify {string} is the most popular book genre.")
+    public void verify_is_the_most_popular_book_genre(String string) {
+        Assert.assertEquals(string,actualMostPopular);
+    }
+
 
 
 }
