@@ -1,4 +1,4 @@
-
+@wip @ui @db
 Feature: Books module
   As a librarian, I should be able to add new book into library
 
@@ -15,6 +15,6 @@ Feature: Books module
     Then verify "The book has been created" message is displayed
     And verify "<Book Name>" information must match with DB
     Examples:
-      | Book Name             | ISBN     | Year | Author          | Book Category        |
-      | Head First Java       | 10112021 | 2021 | Kathy Sierra    | Action and Adventure |
-      | The Scrum Field Guide | 11112021 | 2006 | Mitch Lacey     | Short Story          |
+      | Book Name        | ISBN       | Year | Author     | Book Category      |
+      | Na Drini Cuprija | 8673467519 | 2013 | Ivo Andric | Historical Fiction |
+      | Prokleta Avlija  | 8686003125 | 2006 | Ivo Andric | Fan-Fiction            |

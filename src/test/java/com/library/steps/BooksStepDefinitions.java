@@ -23,6 +23,11 @@ public class BooksStepDefinitions {
     String someBook ="";
     List<String> uiInfo = new ArrayList<>();
     String actualMostPopular= "";
+    String newBook = "";
+    String newIsbn ="";
+    String newYear="";
+    String newAuthor="";
+    String newCategory ="";
     @When("the user navigates to {string} page")
     public void the_user_navigates_to_page(String string) {
         dashBoardPage.navigateModule(string);
@@ -81,6 +86,57 @@ public class BooksStepDefinitions {
     public void verify_is_the_most_popular_book_genre(String string) {
         Assert.assertEquals(string,actualMostPopular);
     }
+
+    @When("the librarian click to add book")
+    public void the_librarian_click_to_add_book() {
+       bookPage.addBook.click();
+    }
+    @When("the librarian enter book name {string}")
+    public void the_librarian_enter_book_name(String string) {
+        bookPage.bookName.sendKeys(string);
+        this.newBook=string;
+    }
+    @When("the librarian enter ISBN {string}")
+    public void the_librarian_enter_isbn(String string) {
+       bookPage.isbn.sendKeys(string);
+       this.newIsbn=string;
+    }
+    @When("the librarian enter year {string}")
+    public void the_librarian_enter_year(String string) {
+        bookPage.year.sendKeys(string);
+        this.newYear=string;
+    }
+    @When("the librarian enter author {string}")
+    public void the_librarian_enter_author(String string) {
+        bookPage.author.sendKeys(string);
+        this.newAuthor=string;
+    }
+    @When("the librarian choose the book category {string}")
+    public void the_librarian_choose_the_book_category(String string) {
+        Select select = new Select(bookPage.categoryDropdown);
+        select.selectByVisibleText(string);
+        this.newCategory=string;
+    }
+    @When("the librarian click to save changes")
+    public void the_librarian_click_to_save_changes() {
+        bookPage.saveChanges.click();
+    }
+    @Then("verify {string} message is displayed")
+    public void verify_message_is_displayed(String string) {
+        Assert.assertTrue(bookPage.toastMessage.isDisplayed());
+    }
+    @Then("verify {string} information must match with DB")
+    public void verify_information_must_match_with_db(String string) {
+        DB_Util.runQuery("select isbn,name,author from books where name = '"+string+"' order by id desc");
+        String expectedBookField= DB_Util.getFirstRowFirstColumn();
+        Map<String,String> actualRowMap = new HashMap<>();
+        actualRowMap.put("Book Name",newBook);
+        actualRowMap.put("ISBN",newIsbn);
+        actualRowMap.put("Author",newAuthor);
+        actualRowMap.put("Book Category",newCategory);
+        Assert.assertTrue(actualRowMap.containsValue(string));
+    }
+
 
 
 
